@@ -54,7 +54,8 @@ multiversx-openclaw-skills/
 │   ├── reputation.md
 │   ├── escrow.md
 │   ├── x402.md
-│   └── manifest.md
+│   ├── manifest.md
+|   └── validate_and_submit_proof.md
 └── scripts/
     └── install.sh         ← One-liner installer (clones moltbot-starter-kit)
 ```

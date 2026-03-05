@@ -3,8 +3,8 @@
 # Usage: curl -sL URL | bash
 #
 # Installs:
-#   1. SKILL.md + reference docs  → .agent/skills/multiversx/
-#   2. moltbot-starter-kit        → .agent/skills/multiversx/moltbot-starter-kit/
+#   1. SKILL.md + reference docs → .agent/skills/multiversx/
+#   2. moltbot-starter-kit       → .agent/skills/multiversx/moltbot-starter-kit/
 #
 # The SKILL.md teaches your agent HOW to use the skills.
 # The starter kit contains the actual TypeScript implementations.
@@ -48,18 +48,19 @@ else
   git clone --quiet --depth 1 "https://github.com/${MOLTBOT_REPO}.git" "${MOLTBOT_DIR}"
 fi
 
-# ── Step 3: Install dependencies ────────────────────────────────────────────
+# ── Step 3: Install moltbot-starter-kit dependencies ────────────────────────
 
-echo "📦 Installing dependencies..."
+echo ""
+echo "📦 Installing moltbot-starter-kit dependencies..."
 cd "${MOLTBOT_DIR}" && npm install --quiet && cd - > /dev/null
 
 echo ""
 echo "✅ MultiversX Agent Skills installed!"
 echo ""
 echo "📂 Structure:"
-echo "   ${SKILL_DIR}/SKILL.md          ← Agent instructions"
-echo "   ${SKILL_DIR}/references/       ← Contract docs"
-echo "   ${MOLTBOT_DIR}/               ← Implementation code"
+echo "   ${SKILL_DIR}/SKILL.md        ← Agent instructions"
+echo "   ${SKILL_DIR}/references/     ← Contract docs"
+echo "   ${MOLTBOT_DIR}/              ← Implementation code"
 echo "   ${MOLTBOT_DIR}/src/skills/    ← All skills"
 echo ""
 echo "📖 Full docs: ${SKILL_DIR}/SKILL.md"
