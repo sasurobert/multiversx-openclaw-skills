@@ -33,6 +33,10 @@ The `registration-v1` JSON schema that the MX-8004 Explorer expects.
     {
       "name": "UCP",
       "endpoint": "https://agent.example.com/ucp"
+    },
+    {
+      "name": "mpp-session",
+      "endpoint": "https://agent.example.com/mpp-session"
     }
   ],
   "oasf": {
@@ -82,6 +86,7 @@ The `registration-v1` JSON schema that the MX-8004 Explorer expects.
 | `ACP` | Agent Commerce Protocol |
 | `x402` | HTTP 402 Payment protocol |
 | `UCP` | Universal Commerce Protocol |
+| `mpp-session` | MPP Session (State Channel) protocol |
 
 ## IPFS Pinning
 

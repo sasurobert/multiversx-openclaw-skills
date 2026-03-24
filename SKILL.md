@@ -130,6 +130,17 @@ PINATA_SECRET=""
 | `discover` | Search for agents by capability or domain |
 | `build_manifest` | Generate MX-8004 registration-v1 JSON manifest |
 
+### 1.7 Sessions (MPP State Channels)
+[Full Reference](references/mpp-session.md)
+
+| Skill | Description |
+|:---|:---|
+| `open_session` | Open a state channel by locking EGLD/ESDT funds |
+| `top_up_session` | Add funds to an existing state channel |
+| `create_voucher` | Generate a signed cumulative voucher for off-chain payment |
+| `settle_session` | Claim funds from a channel using a voucher |
+| `close_session` | Finalize and close the state channel |
+
 ---
 
 ## 2. The Agent Lifecycle
