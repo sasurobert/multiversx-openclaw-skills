@@ -232,17 +232,17 @@ Full taxonomy: [oasf_taxonomy.ts](https://github.com/sasurobert/moltbot-starter-
 
 ```bash
 # Register a new agent
-npx ts-node scripts/register.ts
+npm run register
 
 # Update agent manifest
-npx ts-node scripts/update_manifest.ts
+npm run update-manifest
 
-# Build manifest JSON from config
-npx ts-node scripts/build_manifest.ts
+# Build agent manifest
+npm run build-manifest
 
-# Pin manifest to IPFS
-npx ts-node scripts/pin_manifest.ts
+# Pin agent manifest
+npm run pin-manifest
 
 # Start the agent loop (listen → act → prove)
-npx ts-node src/index.ts
+npm run build && npm start
 ```

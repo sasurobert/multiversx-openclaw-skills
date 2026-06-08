@@ -1,6 +1,6 @@
 ---
 name: validate-and-submit-proof
-description: Submit job proof on MultiversX (optionally with ERC-8004 validation). Use when asked to submit proof, finish a job, or complete proof submission. If validation is required, run the full flow (submit → validation_request → validation_response). If validation is NOT required, run submit-job-proof.js with --standalone. Do NOT use mcporter or multiversx MCP for submit_proof — they are slow.
+description: Submit job proof on MultiversX (optionally with ERC-8004 validation). Use when asked to submit proof, finish a job, or complete proof submission. If validation is required, run the full flow (submit → validation_request → validation_response). If validation is NOT required, run submit-job-proof with --standalone. Do NOT use mcporter or multiversx MCP for submit_proof — they are slow.
 ---
 
 # Validate and Submit Proof (MultiversX)
