@@ -94,7 +94,8 @@ Pin via Pinata:
 
 ```bash
 export PINATA_API_KEY="your-jwt"
-npx ts-node scripts/pin_manifest.ts
+export PINATA_SECRET="your-secret"
+npm run pin-manifest
 ```
 
 Result: `ipfs://QmHash` — use this as your `uri` in `register_agent`.

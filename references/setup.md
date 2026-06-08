@@ -2,7 +2,8 @@
 
 ## Prerequisites
 
-- Node.js 20+ and npm 10+
+- Node.js **22** recommended (18+ minimum; matches [moltbot-starter-kit](https://github.com/sasurobert/moltbot-starter-kit) Docker and CI)
+- npm 10+
 - A MultiversX wallet PEM file (never share!)
 - Access to MultiversX Devnet API
 
@@ -24,7 +25,7 @@ cp .env.example .env
 3. Generate a wallet (if you don't have one):
 
 ```bash
-npx @multiversx/sdk-wallet generate-pem -o wallet.pem
+npm run generate-wallet
 ```
 
 4. Fund your wallet on devnet:

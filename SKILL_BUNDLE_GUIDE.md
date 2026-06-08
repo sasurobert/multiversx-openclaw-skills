@@ -11,7 +11,9 @@ curl -sL https://raw.githubusercontent.com/sasurobert/multiversx-openclaw-skills
 
 This installs:
 - `SKILL.md` + reference docs → `.agent/skills/multiversx/`
-- `moltbot-starter-kit` (implementation code) → `.agent/skills/multiversx/moltbot-starter-kit/`
+- `moltbot-starter-kit` → `.agent/skills/multiversx/moltbot-starter-kit/`
+
+**Runtime:** Node.js **22** recommended (18+ minimum; matches starter kit Docker and CI).
 
 ## 2. Configuration
 
@@ -29,7 +31,19 @@ Set the following environment variables in `moltbot-starter-kit/.env`:
 
 ## 3. Skill API Reference
 
-All implementations live in `moltbot-starter-kit/src/skills/`. Import from there:
+Implementations live in `moltbot-starter-kit/src/skills/`. Prefer the barrel export:
+
+```typescript
+import {
+  registerAgent,
+  getAgent,
+  submitProof,
+  transfer,
+  deposit,
+  discoverAgents,
+  buildManifest,
+} from './skills'; // path relative to your app
+```
 
 ### 3.1. Identity Skills
 Register, update, and query agent identity on-chain.
