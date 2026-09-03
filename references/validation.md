@@ -1,6 +1,6 @@
 # Validation Registry
 
-Job lifecycle management — create jobs, submit proofs, verify completion.
+Job lifecycle management — create jobs, submit proofs, verify completion, and manage MIP-compliant decentralized validation.
 
 ## Endpoints
 
@@ -15,9 +15,17 @@ Job lifecycle management — create jobs, submit proofs, verify completion.
 - Only callable by the assigned agent
 - Gas: 10,000,000
 
-### `verify_job(job_id)` *(owner only)*
+### `verify_job(job_id)` *(owner or authorized validator)*
 - Mark a job as verified
 - Gas: 6,000,000
+
+### `validation_request(validator_address, request_uri, hash)`
+- Request external third-party validation for an off-chain computation or artifact
+- Emits request event and creates request tracking entry
+
+### `validation_response(request_id, status, response_uri)`
+- Validator submits evaluation verdict (`0 = Rejected`, `1 = Approved`) along with verifiable `response_uri` metadata
+- Updates on-chain verification record
 
 ### `clean_old_jobs(job_ids...)` 
 - Batch cleanup of old job entries
@@ -37,14 +45,12 @@ JobData {
   employer: Address;
   creation_timestamp: u64;
   agent_nonce: u64;
+  response_uri?: string;
 }
 ```
 
 ## Job Status Flow
 
 ```
-New (0) → Pending (1) → Verified (2)
-  │          │
-  │          └── submit_proof() changes to Pending
-  └── init_job() creates with status New
+New (0) ──submit_proof()──▶ Pending (1) ──verify_job() / validation_response()──▶ Verified (2)
 ```

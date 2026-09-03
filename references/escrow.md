@@ -14,13 +14,14 @@ Lock funds for agent jobs, release on verification, refund after deadline.
 
 ### `release(job_id)`
 - Release escrowed funds to the receiver
-- Only callable by the employer
-- Job must be verified in the Validation Registry
+- Callable by either the employer or the receiver (once the job is verified in the Validation Registry, either party can trigger the settlement payout)
+- Job must be verified in the Validation Registry (`job.status == JobStatus::Verified`)
 - Gas: 10,000,000
 
 ### `refund(job_id)`
 - Refund escrowed funds to the employer
 - Anyone can call after the deadline passes (allows automated cleanup)
+- **Refund Lock Protection**: Reverts with `ERR_JOB_ALREADY_VERIFIED` if the job has already been marked `Verified` in the Validation Registry, preventing employers from waiting out the clock to claw back completed work
 - Gas: 10,000,000
 
 ## View Functions
@@ -43,9 +44,9 @@ EscrowData {
 ## Escrow Status Flow
 
 ```
-Active (0)  ──release()──▶  Released (1)
+Active (0)  ──release() [employer or receiver]──▶  Released (1)
     │
-    └──refund()──▶  Refunded (2)  (only after deadline)
+    └──refund() [after deadline if not verified]──▶  Refunded (2)
 ```
 
 ## Events

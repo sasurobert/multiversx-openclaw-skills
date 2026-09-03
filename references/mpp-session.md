@@ -4,33 +4,34 @@ MPP Sessions enable high-frequency, micro-payments between agents without the la
 
 ## 🏛️ Architecture
 
-1.  **Open**: Employer locks funds (`amount_locked`) in the `mpp-session-mvx` contract.
-2.  **Transact**: Employer sends signed **vouchers** to the Receiver off-chain. Each voucher is cumulative (Authorizes total `X` so far).
-3.  **Settle**: Receiver submits the **latest** voucher to the contract to claim funds.
-4.  **Close**: One party closes the session to release remaining funds.
+1. **Open**: Employer locks funds (`amount_locked`) in the `mpp-session-mvx` contract.
+2. **Transact**: Employer sends signed **vouchers** to the Receiver off-chain. Each voucher is cumulative (authorizes total `X` so far).
+3. **Settle**: Receiver submits the **latest** voucher to the contract to claim cumulative earnings without closing the channel.
+4. **Close**: Mutual immediate closure via `close` with the latest voucher, or 2-phase unilateral closure via `request_close` followed by `finalize_close`.
 
 ## 🆔 Channel ID
 
-The `channel_id` is a deterministic `keccak256` hash:
-`keccak256(employer_address + receiver_address + token_identifier + token_nonce)`
+The `channel_id` is a deterministic `keccak256` hash computed by the contract:
+`keccak256(employer_address + receiver_address + channel_nonce)`
 
 ## 🎟️ Voucher Primitive
 
-A voucher is a cryptographic signature over the following payload:
+A voucher is a cryptographic Ed25519 signature over the following binary payload:
 
 ```
 keccak256(
     "mpp-session-v1" + 
-    contract_address + 
-    channel_id + 
-    cumulative_amount + 
-    nonce
+    contract_address (32 bytes) + 
+    channel_id (32 bytes) + 
+    cumulative_amount (32 bytes big-endian zero-padded) + 
+    nonce (8 bytes u64 big-endian)
 )
 ```
 
-- **Domain Separator**: `mpp-session-v1` (string)
-- **Contract**: The address of the `mpp-session-mvx` contract.
-- **Complexity**: Vouchers are cumulative. If Voucher 1 is for 10 tokens and Voucher 2 is for 15, the contract only cares about the latest one (15).
+- **Domain Separator**: `mpp-session-v1` (ASCII bytes)
+- **Contract Address**: 32-byte public key of the `mpp-session-mvx` contract.
+- **Cumulative Amount**: Canonical 32-byte BE zero-padded integer representation (preventing encoding mismatch reverts).
+- **Complexity**: Vouchers are strictly monotonic and cumulative.
 
 ## 🛠️ Skills & Endpoints
 
@@ -38,11 +39,12 @@ keccak256(
 
 | Endpoint | Arguments | Description |
 |:---|:---|:---|
-| `open` | `receiver`, `token`, `amount` | Locks funds and opens a channel. |
-| `top_up` | `channel_id` | Adds more funds to an existing channel. |
-| `settle` | `channel_id`, `amount`, `nonce`, `signature` | Claims cumulative funds via voucher. |
-| `close` | `channel_id` | Terminate session (final settlement + release). |
-| `request_close` | `channel_id` | Start a challenge period if the other party is unresponsive. |
+| `open` | `receiver`, `token`, `amount` | Locks funds and opens a payment channel. |
+| `top_up` | `channel_id` | Adds additional funds to an active channel. |
+| `settle` | `channel_id`, `amount`, `nonce`, `signature` | Claims cumulative funds via voucher without terminating channel. |
+| `close` | `channel_id`, `amount`, `nonce`, `signature` | Closes session immediately, pays receiver cumulative amount and refunds remainder to employer. |
+| `request_close` | `channel_id` | Starts 2-phase closing challenge window (`Closing = 2`) if counterparty is unresponsive. Receiver can still settle valid vouchers during the window. |
+| `finalize_close` | `channel_id` | Terminate session and refund remaining funds to employer after challenge deadline expires. |
 
 ### Facilitator API
 
@@ -56,9 +58,8 @@ keccak256(
 
 1. **Employer Agent**: "I need 1000 AI inferences. I'll open a session for 100 EGLD."
 2. **Setup**: Employer calls `open(receiver, "EGLD", 100)`.
-3. **Execution**: For each inference, Employer sends a voucher:
+3. **Execution**: For each inference, Employer sends an off-chain voucher:
    - Inference 1: `signVoucher(amount=0.1, nonce=1)`
    - Inference 2: `signVoucher(amount=0.2, nonce=2)`
    - ...
-4. **Settlement**: After 1000 inferences, Receiver calls `settle(channel_id, amount=10, nonce=1000, signature)`.
-5. **Cleanup**: Receiver calls `close(channel_id)` to get paid and return change to Employer.
+4. **Mutual Closure**: After 1000 inferences, Receiver calls `close(channel_id, amount=10, nonce=1000, signature)` to receive 10 EGLD while returning 90 EGLD refund immediately to Employer.
